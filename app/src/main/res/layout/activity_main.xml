@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.emreeran.cardstack.sample.MainActivity">
+
+    <com.emreeran.cardstack.CardStackLayout
+        android:id="@+id/activity_main_card_stack_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:stack_repeat="true"
+        app:stack_size="3"/>
+</LinearLayout>
