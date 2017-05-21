@@ -8,7 +8,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
 
     }
 
@@ -19,4 +19,34 @@ android {
         }
     }
 }
+
+Properties localProperties = new Properties()
+localProperties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'AndroidCardStackLayout'
+
+    publishedGroupId = 'com.emreeran.android'
+    libraryName = 'CardStackLayout'
+    artifact = 'cardstacklayout'
+
+    libraryDescription = 'Tinder like card stack layout for Android'
+
+    siteUrl = 'https://github.com/emreeran/AndroidCardStackLayout'
+    gitUrl = 'https://github.com/emreeran/AndroidCardStackLayout.git'
+
+    libraryVersion = '1.0.0'
+
+    developerId = localProperties.getProperty("bintray.developerId")
+    developerName = localProperties.getProperty("bintray.developerName")
+    developerEmail = localProperties.getProperty("bintray.developerEmail")
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
 
