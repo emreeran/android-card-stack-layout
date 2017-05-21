@@ -17,6 +17,9 @@ import android.widget.FrameLayout;
 
 public class CardStackLayout extends FrameLayout {
 
+    public static final int DIRECTION_LEFT = 0;
+    public static final int DIRECTION_RIGHT = 1;
+
     private static final int DURATION = 300;
 
     private int mLayoutWidth;
@@ -39,6 +42,7 @@ public class CardStackLayout extends FrameLayout {
         }
     };
 
+    private OnCardRemovedListener mOnCardRemovedListener;
     private OnCardCountChangedListener mOnCardCountChangedListener;
     private OnCardMovedListener mOnCardMovedListener;
     private OnCardReleasedListener mOnCardReleasedListener;
@@ -71,6 +75,11 @@ public class CardStackLayout extends FrameLayout {
     @SuppressWarnings("WeakerAccess unused") // Public API
     public void setOnCardReleasedListener(OnCardReleasedListener onCardReleasedListener) {
         mOnCardReleasedListener = onCardReleasedListener;
+    }
+
+    @SuppressWarnings("WeakerAccess unused") // Public API
+    public void setOnCardRemovedListener(OnCardRemovedListener onCardRemovedListener) {
+        mOnCardRemovedListener = onCardRemovedListener;
     }
 
     @Override
@@ -117,6 +126,12 @@ public class CardStackLayout extends FrameLayout {
     void onCardReleased(View view) {
         if (mOnCardReleasedListener != null) {
             mOnCardReleasedListener.onRelease(view);
+        }
+    }
+
+    void onCardRemoved(int direction) {
+        if (mOnCardRemovedListener != null) {
+            mOnCardRemovedListener.onRemove(direction);
         }
     }
 
@@ -228,6 +243,11 @@ public class CardStackLayout extends FrameLayout {
         } else if (childCount > adapterSize) {
             removeViews(adapterSize, childCount);
         }
+    }
+
+    @SuppressWarnings("WeakerAccess") // Public API
+    public interface OnCardRemovedListener {
+        void onRemove(int direction);
     }
 
     @SuppressWarnings("WeakerAccess") // Public API

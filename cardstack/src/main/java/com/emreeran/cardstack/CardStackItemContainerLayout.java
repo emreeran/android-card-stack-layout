@@ -56,10 +56,10 @@ class CardStackItemContainerLayout extends FrameLayout implements View.OnTouchLi
                 case MotionEvent.ACTION_UP:
                     if (isCardBeyondLeftBoundary(view)) {
                         tinderStackLayout.onCardMoved(view, -(mViewWidth));
-                        dismissCard(view, -(mViewWidth * 2));
+                        dismissCard(view, -(mViewWidth * 2), CardStackLayout.DIRECTION_LEFT);
                     } else if (isCardBeyondRightBoundary(view)) {
                         tinderStackLayout.onCardMoved(view, mViewWidth);
-                        dismissCard(view, (mViewWidth * 2));
+                        dismissCard(view, (mViewWidth * 2), CardStackLayout.DIRECTION_RIGHT);
                     } else {
                         tinderStackLayout.onCardMoved(view, 0);
                         resetCard(view);
@@ -123,7 +123,7 @@ class CardStackItemContainerLayout extends FrameLayout implements View.OnTouchLi
         return (view.getX() + (view.getWidth() / 2) > mRightBoundary);
     }
 
-    private void dismissCard(final View view, int xPos) {
+    private void dismissCard(final View view, int xPos, int direction) {
         view.animate()
                 .x(xPos)
                 .y(0)
@@ -153,6 +153,9 @@ class CardStackItemContainerLayout extends FrameLayout implements View.OnTouchLi
 
                     }
                 });
+
+        CardStackLayout parent = (CardStackLayout) view.getParent();
+        parent.onCardRemoved(direction);
     }
 
     private void resetCard(View view) {
