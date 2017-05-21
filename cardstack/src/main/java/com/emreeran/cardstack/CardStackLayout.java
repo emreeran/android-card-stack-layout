@@ -11,6 +11,8 @@ import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 
+import java.util.ArrayList;
+
 /**
  * Created by Emre Eran on 21/05/2017.
  */
@@ -42,10 +44,31 @@ public class CardStackLayout extends FrameLayout {
         }
     };
 
-    private OnCardRemovedListener mOnCardRemovedListener;
-    private OnCardCountChangedListener mOnCardCountChangedListener;
+    private ArrayList<OnCardRemovedListener> mOnCardRemovedListenerArrayList;
+    private ArrayList<OnCardCountChangedListener> mOnCardCountChangedListenerArrayList;
     private OnCardMovedListener mOnCardMovedListener;
     private OnCardReleasedListener mOnCardReleasedListener;
+
+    private final OnCardCountChangedListener mAdapterOnCardCountChangedListener = new OnCardCountChangedListener() {
+        @Override
+        public void onAdd(int cardCount) {
+
+        }
+
+        @Override
+        public void onRemove(int cardCount) {
+            if (mCurrentAdapterItem < mAdapter.getCount()) {
+                View view = mAdapter.getView(mCurrentAdapterItem, null, CardStackLayout.this);
+                addCard(view);
+                mCurrentAdapterItem++;
+            } else if (mRepeat) {
+                mCurrentAdapterItem = 0;
+                View view = mAdapter.getView(mCurrentAdapterItem, null, CardStackLayout.this);
+                addCard(view);
+                mCurrentAdapterItem++;
+            }
+        }
+    };
 
     public CardStackLayout(Context context) {
         super(context);
@@ -62,9 +85,24 @@ public class CardStackLayout extends FrameLayout {
         init(context, attrs);
     }
 
-    @SuppressWarnings("WeakerAccess") // Public API
-    public void setOnCardCountChangedListener(OnCardCountChangedListener onCardCountChangedListener) {
-        mOnCardCountChangedListener = onCardCountChangedListener;
+    @SuppressWarnings("WeakerAccess unused") // Public API
+    public void addOnCardRemovedListener(OnCardRemovedListener onCardRemovedListener) {
+        mOnCardRemovedListenerArrayList.add(onCardRemovedListener);
+    }
+
+    @SuppressWarnings("WeakerAccess unused") // Public API
+    public void removeOnCardRemovedListener(OnCardRemovedListener onCardRemovedListener) {
+        mOnCardRemovedListenerArrayList.remove(onCardRemovedListener);
+    }
+
+    @SuppressWarnings("WeakerAccess unused") // Public API
+    public void addOnCardCountChangedListener(OnCardCountChangedListener onCardCountChangedListener) {
+        mOnCardCountChangedListenerArrayList.add(onCardCountChangedListener);
+    }
+
+    @SuppressWarnings("WeakerAccess unused") // Public API
+    public void removeOnCardCountChangedListener(OnCardCountChangedListener onCardCountChangedListener) {
+        mOnCardCountChangedListenerArrayList.remove(onCardCountChangedListener);
     }
 
     @SuppressWarnings("WeakerAccess unused") // Public API
@@ -75,85 +113,6 @@ public class CardStackLayout extends FrameLayout {
     @SuppressWarnings("WeakerAccess unused") // Public API
     public void setOnCardReleasedListener(OnCardReleasedListener onCardReleasedListener) {
         mOnCardReleasedListener = onCardReleasedListener;
-    }
-
-    @SuppressWarnings("WeakerAccess unused") // Public API
-    public void setOnCardRemovedListener(OnCardRemovedListener onCardRemovedListener) {
-        mOnCardRemovedListener = onCardRemovedListener;
-    }
-
-    @Override
-    public void addView(View child, int index, ViewGroup.LayoutParams params) {
-        super.addView(child, index, params);
-        if (mOnCardCountChangedListener != null) {
-            mOnCardCountChangedListener.onAdd(getChildCount());
-        }
-    }
-
-    @Override
-    public void removeView(View view) {
-        super.removeView(view);
-        if (mOnCardCountChangedListener != null) {
-            mOnCardCountChangedListener.onRemove(getChildCount());
-        }
-    }
-
-    void onCardMoved(View view, float posX) {
-        int childCount = getChildCount();
-        for (int i = childCount - 2; i >= 0; i--) {
-            CardStackItemContainerLayout tinderCardView = (CardStackItemContainerLayout) getChildAt(i);
-
-            if (tinderCardView != null) {
-                if (Math.abs(posX) == (float) mLayoutWidth) {
-                    float scaleValue = 1 - ((childCount - 2 - i) / 50.0f);
-
-                    tinderCardView.animate()
-                            .x(0)
-                            .y((childCount - 2 - i) * mYMultiplier)
-                            .scaleX(scaleValue)
-                            .rotation(0)
-                            .setInterpolator(new AnticipateOvershootInterpolator())
-                            .setDuration(DURATION);
-                }
-            }
-        }
-
-        if (mOnCardMovedListener != null) {
-            mOnCardMovedListener.onMove(view);
-        }
-    }
-
-    void onCardReleased(View view) {
-        if (mOnCardReleasedListener != null) {
-            mOnCardReleasedListener.onRelease(view);
-        }
-    }
-
-    void onCardRemoved(int direction) {
-        if (mOnCardRemovedListener != null) {
-            mOnCardRemovedListener.onRemove(direction);
-        }
-    }
-
-    private void init(Context context, AttributeSet attrs) {
-        setClipChildren(false);
-        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                mLayoutWidth = getWidth();
-                getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-        });
-
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CardStackLayout);
-        mStackSize = typedArray.getInteger(
-                R.styleable.CardStackLayout_stack_size,
-                getResources().getInteger(R.integer.card_stack_layout_default_stack_size)
-        );
-        mRepeat = typedArray.getBoolean(R.styleable.CardStackLayout_stack_repeat, false);
-        typedArray.recycle();
-
-        mYMultiplier = getResources().getDimensionPixelSize(R.dimen.card_stack_layout_child_size_multiplier);
     }
 
     @SuppressWarnings("WeakerAccess") // Public API
@@ -193,8 +152,91 @@ public class CardStackLayout extends FrameLayout {
         initViewsFromAdapter();
     }
 
+    @Override
+    public void addView(View child, int index, ViewGroup.LayoutParams params) {
+        super.addView(child, index, params);
+        if (mOnCardCountChangedListenerArrayList != null) {
+            for (OnCardCountChangedListener listener : mOnCardCountChangedListenerArrayList) {
+                listener.onAdd(getChildCount());
+            }
+        }
+    }
+
+    @Override
+    public void removeView(View view) {
+        super.removeView(view);
+        if (mOnCardCountChangedListenerArrayList != null) {
+            for (OnCardCountChangedListener listener : mOnCardCountChangedListenerArrayList) {
+                listener.onRemove(getChildCount());
+            }
+        }
+    }
+
+    void onCardMoved(View view, float posX) {
+        int childCount = getChildCount();
+        for (int i = childCount - 2; i >= 0; i--) {
+            CardStackItemContainerLayout tinderCardView = (CardStackItemContainerLayout) getChildAt(i);
+
+            if (tinderCardView != null) {
+                if (Math.abs(posX) == (float) mLayoutWidth) {
+                    float scaleValue = 1 - ((childCount - 2 - i) / 50.0f);
+
+                    tinderCardView.animate()
+                            .x(0)
+                            .y((childCount - 2 - i) * mYMultiplier)
+                            .scaleX(scaleValue)
+                            .rotation(0)
+                            .setInterpolator(new AnticipateOvershootInterpolator())
+                            .setDuration(DURATION);
+                }
+            }
+        }
+
+        if (mOnCardMovedListener != null) {
+            mOnCardMovedListener.onMove(view);
+        }
+    }
+
+    void onCardReleased(View view) {
+        if (mOnCardReleasedListener != null) {
+            mOnCardReleasedListener.onRelease(view);
+        }
+    }
+
+    void onCardRemoved(int direction) {
+        if (mOnCardRemovedListenerArrayList != null) {
+            for (OnCardRemovedListener listener : mOnCardRemovedListenerArrayList)
+                listener.onRemove(direction);
+        }
+    }
+
+    private void init(Context context, AttributeSet attrs) {
+        mOnCardRemovedListenerArrayList = new ArrayList<>();
+        mOnCardCountChangedListenerArrayList = new ArrayList<>();
+        setClipChildren(false);
+
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mLayoutWidth = getWidth();
+                getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CardStackLayout);
+        mStackSize = typedArray.getInteger(
+                R.styleable.CardStackLayout_stack_size,
+                getResources().getInteger(R.integer.card_stack_layout_default_stack_size)
+        );
+        mRepeat = typedArray.getBoolean(R.styleable.CardStackLayout_stack_repeat, false);
+        typedArray.recycle();
+
+        mYMultiplier = getResources().getDimensionPixelSize(R.dimen.card_stack_layout_child_size_multiplier);
+    }
+
     private void initViewsFromAdapter() {
         removeAllViews();
+        removeOnCardCountChangedListener(mAdapterOnCardCountChangedListener);
 
         if (mAdapter != null) {
             for (mCurrentAdapterItem = 0;
@@ -204,26 +246,7 @@ public class CardStackLayout extends FrameLayout {
                 addCard(view);
             }
 
-            setOnCardCountChangedListener(new OnCardCountChangedListener() {
-                @Override
-                public void onAdd(int cardCount) {
-
-                }
-
-                @Override
-                public void onRemove(int cardCount) {
-                    if (mCurrentAdapterItem < mAdapter.getCount()) {
-                        View view = mAdapter.getView(mCurrentAdapterItem, null, CardStackLayout.this);
-                        addCard(view);
-                        mCurrentAdapterItem++;
-                    } else if (mRepeat) {
-                        mCurrentAdapterItem = 0;
-                        View view = mAdapter.getView(mCurrentAdapterItem, null, CardStackLayout.this);
-                        addCard(view);
-                        mCurrentAdapterItem++;
-                    }
-                }
-            });
+            addOnCardCountChangedListener(mAdapterOnCardCountChangedListener);
         }
     }
 
@@ -265,5 +288,59 @@ public class CardStackLayout extends FrameLayout {
     @SuppressWarnings("WeakerAccess") // Public API
     public interface OnCardReleasedListener {
         void onRelease(View view);
+    }
+
+    @SuppressWarnings("WeakerAccess unused") // Public API
+    public static abstract class CardStackAdapter<T extends CardStackItemHolder> extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            return getItemCount();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            T holder;
+            if (convertView == null) {
+                int viewType = getItemViewType(position);
+                holder = onCreateViewHolder(parent, viewType);
+                convertView = holder.getItemView();
+                convertView.setTag(R.id.holder_tag, holder);
+            }
+
+            holder = (T) convertView.getTag(R.id.holder_tag);
+            onBindViewHolder(holder, position);
+
+            return convertView;
+        }
+
+        public abstract T onCreateViewHolder(ViewGroup parent, int viewType);
+
+        public abstract void onBindViewHolder(T holder, int position);
+
+        public abstract int getItemCount();
+    }
+
+    @SuppressWarnings("WeakerAccess") // Public API
+    public static class CardStackItemHolder {
+        private View mItemView;
+
+        public CardStackItemHolder(View itemView) {
+            mItemView = itemView;
+        }
+
+        public View getItemView() {
+            return mItemView;
+        }
     }
 }

@@ -37,14 +37,9 @@ public class MainActivity extends AppCompatActivity {
             mCardStackLayout.addCard(view);
         }
 
-        mCardStackLayout.setOnCardCountChangedListener(new CardStackLayout.OnCardCountChangedListener() {
+        mCardStackLayout.addOnCardRemovedListener(new CardStackLayout.OnCardRemovedListener() {
             @Override
-            public void onAdd(int cardCount) {
-
-            }
-
-            @Override
-            public void onRemove(int cardCount) {
+            public void onRemove(int direction) {
                 View view = layoutInflater.inflate(R.layout.card_item, mCardStackLayout, false);
                 TextView textView = (TextView) view.findViewById(R.id.card_item_text_view);
                 String text = "Card " + (mIndex + 1);
@@ -60,43 +55,30 @@ public class MainActivity extends AppCompatActivity {
         mCardStackLayout.setAdapter(adapter);
     }
 
-    private class CardAdapter extends BaseAdapter {
+    private class CardAdapter extends CardStackLayout.CardStackAdapter<CardHolder> {
         @Override
-        public int getCount() {
-            return 10;
+        public CardHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_item, parent, false);
+            return new CardHolder(view);
         }
 
         @Override
-        public Object getItem(int position) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            CardHolder holder;
-            if (convertView == null) {
-                convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_item, parent, false);
-                holder = new CardHolder(convertView);
-                convertView.setTag(holder);
-            }
-
-            holder = (CardHolder) convertView.getTag();
+        public void onBindViewHolder(CardHolder holder, int position) {
             holder.setViews(position);
+        }
 
-            return convertView;
+        @Override
+        public int getItemCount() {
+            return 10;
         }
     }
 
-    private class CardHolder {
+    private class CardHolder extends CardStackLayout.CardStackItemHolder {
         TextView mTextView;
 
-        CardHolder(View view) {
-            mTextView = (TextView) view.findViewById(R.id.card_item_text_view);
+        CardHolder(View itemView) {
+            super(itemView);
+            mTextView = (TextView) itemView.findViewById(R.id.card_item_text_view);
         }
 
         void setViews(int position) {
