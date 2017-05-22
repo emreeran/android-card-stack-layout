@@ -27,7 +27,7 @@ ext {
     bintrayRepo = 'maven'
     bintrayName = 'AndroidCardStackLayout'
 
-    publishedGroupId = 'com.emreeran.android'
+    publishedGroupId = 'com.emreeran.cardstacklayout'
     libraryName = 'CardStackLayout'
     artifact = 'cardstacklayout'
 
