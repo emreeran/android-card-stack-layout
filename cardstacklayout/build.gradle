@@ -8,7 +8,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0.0"
+        versionName "1.0.1"
 
     }
 
@@ -36,7 +36,7 @@ ext {
     siteUrl = 'https://github.com/emreeran/AndroidCardStackLayout'
     gitUrl = 'https://github.com/emreeran/AndroidCardStackLayout.git'
 
-    libraryVersion = '1.0.0'
+    libraryVersion = '1.0.1'
 
     developerId = localProperties.getProperty("bintray.developerId")
     developerName = localProperties.getProperty("bintray.developerName")
