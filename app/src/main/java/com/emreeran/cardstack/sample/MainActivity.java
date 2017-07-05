@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.emreeran.cardstack.CardStackLayout;
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class CardHolder extends CardStackLayout.CardStackItemHolder {
+    private class CardHolder extends CardStackLayout.ViewHolder {
         TextView mTextView;
 
         CardHolder(View itemView) {

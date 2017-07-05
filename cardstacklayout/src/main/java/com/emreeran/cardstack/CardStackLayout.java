@@ -291,7 +291,7 @@ public class CardStackLayout extends FrameLayout {
     }
 
     @SuppressWarnings("WeakerAccess unused") // Public API
-    public static abstract class CardStackAdapter<T extends CardStackItemHolder> extends BaseAdapter {
+    public static abstract class CardStackAdapter<T extends ViewHolder> extends BaseAdapter {
 
         @Override
         public int getCount() {
@@ -332,10 +332,10 @@ public class CardStackLayout extends FrameLayout {
     }
 
     @SuppressWarnings("WeakerAccess") // Public API
-    public static class CardStackItemHolder {
+    public static class ViewHolder {
         private View mItemView;
 
-        public CardStackItemHolder(View itemView) {
+        public ViewHolder(View itemView) {
             mItemView = itemView;
         }
 
