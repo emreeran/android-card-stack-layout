@@ -342,5 +342,9 @@ public class CardStackLayout extends FrameLayout {
         public View getItemView() {
             return mItemView;
         }
+
+        public void setOnClickListener(OnClickListener onClickListener) {
+            mItemView.setOnClickListener(onClickListener);
+        }
     }
 }

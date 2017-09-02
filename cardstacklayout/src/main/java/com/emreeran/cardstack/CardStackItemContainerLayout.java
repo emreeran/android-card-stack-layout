@@ -3,6 +3,8 @@ package com.emreeran.cardstack;
 import android.animation.Animator;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,8 @@ class CardStackItemContainerLayout extends FrameLayout implements View.OnTouchLi
     private int mViewWidth;
     private int mPadding;
 
+    private GestureDetector mGestureDetector;
+
     public CardStackItemContainerLayout(Context context) {
         super(context);
         init();
@@ -42,9 +46,19 @@ class CardStackItemContainerLayout extends FrameLayout implements View.OnTouchLi
     }
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return onTouch(this, ev);
+    }
+
+    @Override
     public boolean onTouch(final View view, MotionEvent motionEvent) {
-        CardStackLayout tinderStackLayout = ((CardStackLayout) view.getParent());
-        CardStackItemContainerLayout topCard = (CardStackItemContainerLayout) tinderStackLayout.getChildAt(tinderStackLayout.getChildCount() - 1);
+        CardStackLayout cardStackLayout = ((CardStackLayout) view.getParent());
+        CardStackItemContainerLayout topCard = (CardStackItemContainerLayout) cardStackLayout.getChildAt(cardStackLayout.getChildCount() - 1);
+        if (mGestureDetector.onTouchEvent(motionEvent)) {
+            topCard.getChildAt(0).performClick();
+            return true;
+        }
+
         if (topCard.equals(view)) {
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -55,13 +69,13 @@ class CardStackItemContainerLayout extends FrameLayout implements View.OnTouchLi
                     return true;
                 case MotionEvent.ACTION_UP:
                     if (isCardBeyondLeftBoundary(view)) {
-                        tinderStackLayout.onCardMoved(view, -(mViewWidth));
+                        cardStackLayout.onCardMoved(view, -(mViewWidth));
                         dismissCard(view, -(mViewWidth * 2), CardStackLayout.DIRECTION_LEFT);
                     } else if (isCardBeyondRightBoundary(view)) {
-                        tinderStackLayout.onCardMoved(view, mViewWidth);
+                        cardStackLayout.onCardMoved(view, mViewWidth);
                         dismissCard(view, (mViewWidth * 2), CardStackLayout.DIRECTION_RIGHT);
                     } else {
-                        tinderStackLayout.onCardMoved(view, 0);
+                        cardStackLayout.onCardMoved(view, 0);
                         resetCard(view);
                     }
 
@@ -76,7 +90,7 @@ class CardStackItemContainerLayout extends FrameLayout implements View.OnTouchLi
                     float posX = view.getX() + dX;
                     float posY = view.getY() + dY;
 
-                    tinderStackLayout.onCardMoved(view, posX);
+                    cardStackLayout.onCardMoved(view, posX);
 
                     // Set new position
                     view.setX(posX);
@@ -99,6 +113,8 @@ class CardStackItemContainerLayout extends FrameLayout implements View.OnTouchLi
     }
 
     private void init() {
+        mGestureDetector = new GestureDetector(getContext(), new SingleTapConfirm());
+
         if (!isInEditMode()) {
             getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
@@ -177,6 +193,13 @@ class CardStackItemContainerLayout extends FrameLayout implements View.OnTouchLi
             view.setRotation(rotation);
         } else {
             view.setRotation(-rotation);
+        }
+    }
+
+    private class SingleTapConfirm extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapUp(MotionEvent event) {
+            return true;
         }
     }
 }

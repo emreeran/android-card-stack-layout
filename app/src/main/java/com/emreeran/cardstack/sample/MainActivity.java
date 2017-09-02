@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.emreeran.cardstack.CardStackLayout;
 
@@ -83,6 +84,13 @@ public class MainActivity extends AppCompatActivity {
         void setViews(int position) {
             String text = "Card " + (position + 1);
             mTextView.setText(text);
+            final int pos = position + 1;
+            setOnClickListener(new CardStackLayout.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(MainActivity.this, "clicked card " + pos, Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 }
