@@ -2,9 +2,11 @@ package com.emreeran.cardstack.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,19 +78,30 @@ public class MainActivity extends AppCompatActivity {
     private class CardHolder extends CardStackLayout.ViewHolder {
         TextView mTextView;
 
+        Button mButton;
+
         CardHolder(View itemView) {
             super(itemView);
             mTextView = (TextView) itemView.findViewById(R.id.card_item_text_view);
+            mButton = (Button) itemView.findViewById(R.id.card_item_button);
         }
 
         void setViews(int position) {
             String text = "Card " + (position + 1);
             mTextView.setText(text);
             final int pos = position + 1;
-            setOnClickListener(new CardStackLayout.OnClickListener() {
+
+            itemView.setOnClickListener(new CardStackLayout.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(MainActivity.this, "clicked card " + pos, Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            mButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(MainActivity.this, "clicked button " + pos, Toast.LENGTH_SHORT).show();
                 }
             });
         }

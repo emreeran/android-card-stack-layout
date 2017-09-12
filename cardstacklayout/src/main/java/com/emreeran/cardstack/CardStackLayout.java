@@ -314,7 +314,7 @@ public class CardStackLayout extends FrameLayout {
             if (convertView == null) {
                 int viewType = getItemViewType(position);
                 holder = onCreateViewHolder(parent, viewType);
-                convertView = holder.getItemView();
+                convertView = holder.itemView;
                 convertView.setTag(R.id.holder_tag, holder);
             }
 
@@ -333,18 +333,10 @@ public class CardStackLayout extends FrameLayout {
 
     @SuppressWarnings("WeakerAccess") // Public API
     public static class ViewHolder {
-        private View mItemView;
+        protected View itemView;
 
         public ViewHolder(View itemView) {
-            mItemView = itemView;
-        }
-
-        public View getItemView() {
-            return mItemView;
-        }
-
-        public void setOnClickListener(OnClickListener onClickListener) {
-            mItemView.setOnClickListener(onClickListener);
+            this.itemView = itemView;
         }
     }
 }
