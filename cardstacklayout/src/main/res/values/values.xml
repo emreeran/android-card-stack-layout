@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="card_stack_layout_default_stack_size">5</integer>
+    <integer name="card_stack_layout_default_stack_scale">50</integer>
     <item name="holder_tag" type="id"/>
 </resources>

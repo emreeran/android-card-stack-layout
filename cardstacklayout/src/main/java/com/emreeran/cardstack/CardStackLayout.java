@@ -28,6 +28,7 @@ public class CardStackLayout extends FrameLayout {
     private int mYMultiplier;
 
     private int mCurrentAdapterItem;
+    private float mStackScale;
     private int mStackSize;
     private boolean mRepeat;
 
@@ -125,7 +126,7 @@ public class CardStackLayout extends FrameLayout {
         int childCount = getChildCount();
         addView(cardStackItemContainerLayout, 0, layoutParams);
 
-        float scaleValue = 1 - (childCount / 50.0f);
+        float scaleValue = 1 - (childCount / mStackScale);
 
         cardStackItemContainerLayout.animate()
                 .x(0)
@@ -179,7 +180,7 @@ public class CardStackLayout extends FrameLayout {
 
             if (tinderCardView != null) {
                 if (Math.abs(posX) == (float) mLayoutWidth) {
-                    float scaleValue = 1 - ((childCount - 2 - i) / 50.0f);
+                    float scaleValue = 1 - ((childCount - 2 - i) / mStackScale);
 
                     tinderCardView.animate()
                             .x(0)
@@ -229,6 +230,10 @@ public class CardStackLayout extends FrameLayout {
                 getResources().getInteger(R.integer.card_stack_layout_default_stack_size)
         );
         mRepeat = typedArray.getBoolean(R.styleable.CardStackLayout_stack_repeat, false);
+        mStackScale = typedArray.getFloat(
+                R.styleable.CardStackLayout_stack_scale,
+                getResources().getInteger(R.integer.card_stack_layout_default_stack_size)
+        );
         typedArray.recycle();
 
         mYMultiplier = getResources().getDimensionPixelSize(R.dimen.card_stack_layout_child_size_multiplier);
