@@ -176,13 +176,13 @@ public class CardStackLayout extends FrameLayout {
     void onCardMoved(View view, float posX) {
         int childCount = getChildCount();
         for (int i = childCount - 2; i >= 0; i--) {
-            CardStackItemContainerLayout tinderCardView = (CardStackItemContainerLayout) getChildAt(i);
+            CardStackItemContainerLayout cardView = (CardStackItemContainerLayout) getChildAt(i);
 
-            if (tinderCardView != null) {
+            if (cardView != null) {
                 if (Math.abs(posX) == (float) mLayoutWidth) {
                     float scaleValue = 1 - ((childCount - 2 - i) / mStackScale);
 
-                    tinderCardView.animate()
+                    cardView.animate()
                             .x(0)
                             .y((childCount - 2 - i) * mYMultiplier)
                             .scaleX(scaleValue)

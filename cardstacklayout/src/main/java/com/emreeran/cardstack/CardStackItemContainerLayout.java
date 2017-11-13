@@ -163,8 +163,8 @@ class CardStackItemContainerLayout extends FrameLayout implements View.OnTouchLi
                 .setInterpolator(new OvershootInterpolator())
                 .setDuration(DURATION);
 
-        CardStackLayout tinderStackLayout = ((CardStackLayout) view.getParent());
-        tinderStackLayout.onCardReleased(view);
+        CardStackLayout cardStackLayout = ((CardStackLayout) view.getParent());
+        cardStackLayout.onCardReleased(view);
     }
 
     private void setCardRotation(View view, float posX) {
