@@ -1,14 +1,13 @@
 apply plugin: 'com.android.library'
-
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0.3"
+        targetSdkVersion 26
+        versionCode 5
+        versionName "1.0.4"
 
     }
 
@@ -18,11 +17,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
-
 Properties localProperties = new Properties()
 localProperties.load(project.rootProject.file('local.properties').newDataInputStream())
-
 ext {
     bintrayRepo = 'maven'
     bintrayName = 'AndroidCardStackLayout'
@@ -36,7 +37,7 @@ ext {
     siteUrl = 'https://github.com/emreeran/AndroidCardStackLayout'
     gitUrl = 'https://github.com/emreeran/AndroidCardStackLayout.git'
 
-    libraryVersion = '1.0.3'
+    libraryVersion = '1.0.4'
 
     developerId = localProperties.getProperty("bintray.developerId")
     developerName = localProperties.getProperty("bintray.developerName")
@@ -46,7 +47,8 @@ ext {
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
     allLicenses = ["Apache-2.0"]
 }
-
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
 
+dependencies {
+}
