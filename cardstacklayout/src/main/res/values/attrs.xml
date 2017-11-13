@@ -4,5 +4,6 @@
         <attr name="stack_size" format="integer"/>
         <attr name="stack_repeat" format="boolean"/>
         <attr name="stack_scale" format="float"/>
+        <attr name="stack_child_height_multiplier" format="dimension"/>
     </declare-styleable>
 </resources>

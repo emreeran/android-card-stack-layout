@@ -234,9 +234,11 @@ public class CardStackLayout extends FrameLayout {
                 R.styleable.CardStackLayout_stack_scale,
                 getResources().getInteger(R.integer.card_stack_layout_default_stack_size)
         );
+        mYMultiplier = typedArray.getDimensionPixelSize(
+                R.styleable.CardStackLayout_stack_child_height_multiplier,
+                getResources().getDimensionPixelSize(R.dimen.card_stack_layout_child_size_multiplier)
+        );
         typedArray.recycle();
-
-        mYMultiplier = getResources().getDimensionPixelSize(R.dimen.card_stack_layout_child_size_multiplier);
     }
 
     private void initViewsFromAdapter() {
