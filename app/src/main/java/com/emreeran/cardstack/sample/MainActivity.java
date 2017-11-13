@@ -2,7 +2,6 @@ package com.emreeran.cardstack.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mCardStackLayout = (CardStackLayout) findViewById(R.id.activity_main_card_stack_layout);
+        mCardStackLayout = findViewById(R.id.activity_main_card_stack_layout);
         addCardsWithAdapter();
 //        addCardsManually();
     }
@@ -33,22 +32,19 @@ public class MainActivity extends AppCompatActivity {
 
         for (mIndex = 0; mIndex < 5; mIndex++) {
             View view = layoutInflater.inflate(R.layout.card_item, mCardStackLayout, false);
-            TextView textView = (TextView) view.findViewById(R.id.card_item_text_view);
+            TextView textView = view.findViewById(R.id.card_item_text_view);
             String text = "Card " + (mIndex + 1);
             textView.setText(text);
             mCardStackLayout.addCard(view);
         }
 
-        mCardStackLayout.addOnCardRemovedListener(new CardStackLayout.OnCardRemovedListener() {
-            @Override
-            public void onRemove(int direction) {
-                View view = layoutInflater.inflate(R.layout.card_item, mCardStackLayout, false);
-                TextView textView = (TextView) view.findViewById(R.id.card_item_text_view);
-                String text = "Card " + (mIndex + 1);
-                textView.setText(text);
-                mCardStackLayout.addCard(view);
-                mIndex++;
-            }
+        mCardStackLayout.addOnCardRemovedListener(direction -> {
+            View view = layoutInflater.inflate(R.layout.card_item, mCardStackLayout, false);
+            TextView textView = view.findViewById(R.id.card_item_text_view);
+            String text = "Card " + (mIndex + 1);
+            textView.setText(text);
+            mCardStackLayout.addCard(view);
+            mIndex++;
         });
     }
 
@@ -82,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
         CardHolder(View itemView) {
             super(itemView);
-            mTextView = (TextView) itemView.findViewById(R.id.card_item_text_view);
-            mButton = (Button) itemView.findViewById(R.id.card_item_button);
+            mTextView = itemView.findViewById(R.id.card_item_text_view);
+            mButton = itemView.findViewById(R.id.card_item_button);
         }
 
         void setViews(int position) {
@@ -91,19 +87,9 @@ public class MainActivity extends AppCompatActivity {
             mTextView.setText(text);
             final int pos = position + 1;
 
-            itemView.setOnClickListener(new CardStackLayout.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(MainActivity.this, "clicked card " + pos, Toast.LENGTH_SHORT).show();
-                }
-            });
+            itemView.setOnClickListener(view -> Toast.makeText(MainActivity.this, "clicked card " + pos, Toast.LENGTH_SHORT).show());
 
-            mButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(MainActivity.this, "clicked button " + pos, Toast.LENGTH_SHORT).show();
-                }
-            });
+            mButton.setOnClickListener(v -> Toast.makeText(MainActivity.this, "clicked button " + pos, Toast.LENGTH_SHORT).show());
         }
     }
 }
