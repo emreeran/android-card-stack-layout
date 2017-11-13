@@ -17,7 +17,7 @@ If using Gradle add jcenter or mavenCentral to repositories
 Add to your module dependencies
         
         dependencies {
-            compile 'com.emreeran.cardstacklayout:cardstacklayout:1.0.3'
+            compile 'com.emreeran.cardstacklayout:cardstacklayout:1.0.4'
         }
 
 
@@ -29,7 +29,11 @@ Add to your layout like:
                 app:stack_repeat="true"
                 app:stack_size="3"/>
 
-- `stack_repeat` and `stack_size` parameters are optional.
+- Optional attributes:
+    - `stack_repeat` : Repeats the stack after depleted if set to true
+    - `stack_size` : Visible card count in the stack
+    - `stack_scale` : Scale down factor of cards in stack, lower is smaller
+    - `stack_child_vertical_position_multiplier` : Dimension value for each card's vertical position relative to the child above. Positive value means downwards. 
 
 Set items with an adapter `CardStackLayout.CardStackAdapter` and view holder `CardStackLayout.ViewHolder` or add items manually with `addCard(View view)` method
 
