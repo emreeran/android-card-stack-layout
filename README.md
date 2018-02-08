@@ -17,7 +17,7 @@ If using Gradle add jcenter or mavenCentral to repositories
 Add to your module dependencies
         
         dependencies {
-            compile 'com.emreeran.cardstacklayout:cardstacklayout:1.0.4'
+            implementation 'com.emreeran.cardstacklayout:cardstacklayout:1.0.5'
         }
 
 
