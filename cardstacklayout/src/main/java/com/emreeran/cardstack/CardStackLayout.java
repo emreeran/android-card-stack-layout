@@ -138,6 +138,11 @@ public class CardStackLayout extends FrameLayout {
 
     @SuppressWarnings("WeakerAccess") // Public API
     public void setAdapter(BaseAdapter adapter) {
+        setAdapter(adapter, 0);
+    }
+
+    @SuppressWarnings({"WeakerAccess", "SameParameterValue"}) // Public API
+    public void setAdapter(BaseAdapter adapter, int startingItem) {
         // Unregister observer if there was a previous adapter
         if (mAdapter != null) {
             mAdapter.unregisterDataSetObserver(mDataSetObserver);
@@ -145,12 +150,16 @@ public class CardStackLayout extends FrameLayout {
 
         mAdapter = adapter;
 
+        if (startingItem >= mAdapter.getCount()) {
+            startingItem = 0;
+        }
+
         // Register to new adapter if one is set
         if (mAdapter != null) {
             mAdapter.registerDataSetObserver(mDataSetObserver);
         }
 
-        initViewsFromAdapter();
+        initViewsFromAdapter(startingItem);
     }
 
     @Override
@@ -241,16 +250,23 @@ public class CardStackLayout extends FrameLayout {
         typedArray.recycle();
     }
 
-    private void initViewsFromAdapter() {
+    private void initViewsFromAdapter(int startingItem) {
         removeAllViews();
         removeOnCardCountChangedListener(mAdapterOnCardCountChangedListener);
 
         if (mAdapter != null) {
-            for (mCurrentAdapterItem = 0;
-                 mCurrentAdapterItem < mStackSize && mCurrentAdapterItem < mAdapter.getCount();
-                 mCurrentAdapterItem++) {
-                View view = mAdapter.getView(mCurrentAdapterItem, null, this);
-                addCard(view);
+            mCurrentAdapterItem = startingItem;
+            for (int addedCardCount = 0; addedCardCount < mStackSize; addedCardCount++) {
+                if (mCurrentAdapterItem < mAdapter.getCount()) {
+                    View view = mAdapter.getView(mCurrentAdapterItem, null, this);
+                    addCard(view);
+                    mCurrentAdapterItem++;
+                } else if (mRepeat) {
+                    mCurrentAdapterItem = 0;
+                    View view = mAdapter.getView(mCurrentAdapterItem, null, this);
+                    addCard(view);
+                    mCurrentAdapterItem++;
+                }
             }
 
             addOnCardCountChangedListener(mAdapterOnCardCountChangedListener);
