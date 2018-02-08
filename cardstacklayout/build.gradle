@@ -1,13 +1,13 @@
 apply plugin: 'com.android.library'
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 26
-        versionCode 5
-        versionName "1.0.4"
+        targetSdkVersion 27
+        versionCode 6
+        versionName "1.0.5"
 
     }
 
@@ -37,7 +37,7 @@ ext {
     siteUrl = 'https://github.com/emreeran/AndroidCardStackLayout'
     gitUrl = 'https://github.com/emreeran/AndroidCardStackLayout.git'
 
-    libraryVersion = '1.0.4'
+    libraryVersion = '1.0.5'
 
     developerId = localProperties.getProperty("bintray.developerId")
     developerName = localProperties.getProperty("bintray.developerName")
